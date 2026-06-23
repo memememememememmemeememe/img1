@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>TurboWarp Video Player</title>
+    <title>TurboWarp Video Player - Sound Enabled</title>
     <style>
         html, body {
             margin: 0;
@@ -9,21 +9,39 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: black; /* Keeps the background clean while loading */
+            background-color: black;
+            cursor: pointer; /* Shows a pointer so users know they can click */
         }
         video {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Fits your ad1.mp4 video perfectly without stretching it */
+            object-fit: contain;
         }
     </style>
 </head>
 <body>
 
-    <video autoplay loop muted controls playsinline>
+    <video id="myVideo" controls playsinline>
         <source src="ad1.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
+
+    <script>
+        const video = document.getElementById('myVideo');
+
+        // Automatically try to play (browsers might mute or block this initially)
+        video.play().catch(error => {
+            console.log("Browser blocked autoplay with audio. Waiting for user interaction to play with sound...");
+        });
+
+        // The magic trick: The moment the user clicks anywhere inside the project/iframe, 
+        // the video instantly plays with audio fully enabled!
+        window.addEventListener('click', () => {
+            if (video.paused) {
+                video.play();
+            }
+        });
+    </script>
 
 </body>
 </html>
