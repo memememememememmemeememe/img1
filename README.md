@@ -1,2 +1,2 @@
 # img1
-img1 for zynsports
+This project are the assets and html's for ZYN Sports, (fake company)
