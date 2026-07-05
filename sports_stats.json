@@ -1,0 +1,42 @@
+{
+    "Miguel": {
+        "club": "ZYN Sports FC",
+        "matches": 2,
+        "goals": 24,
+        "wins": 2,
+        "draws": 0,
+        "losses": 0
+    },
+    "Max": {
+        "club": "ZYN Sports FC",
+        "matches": 0,
+        "goals": 0,
+        "wins": 0,
+        "draws": 0,
+        "losses": 0
+    },
+    "Angie": {
+        "club": "ZYN Sports FC",
+        "matches": 0,
+        "goals": 0,
+        "wins": 0,
+        "draws": 0,
+        "losses": 0
+    },
+    "Cristopher": {
+        "club": "ZYN Sports FC",
+        "matches": 0,
+        "goals": 0,
+        "wins": 0,
+        "draws": 0,
+        "losses": 0
+    },
+    "Nelson": {
+        "club": "ZYN Sports FC",
+        "matches": 0,
+        "goals": 0,
+        "wins": 0,
+        "draws": 0,
+        "losses": 0
+    }
+}
