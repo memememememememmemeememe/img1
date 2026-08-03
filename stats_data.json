@@ -19,12 +19,12 @@
     },
     "Angie": {
         "club": "ZYN Sports FC",
-        "matches": 0,
-        "goals": 0,
-        "wins": 0,
+        "matches": 1,
+        "goals": 15,
+        "wins": 1,
         "draws": 0,
         "losses": 0,
-        "gc": 0
+        "gc": 2
     },
     "Cristopher": {
         "club": "ZYN Sports FC",
