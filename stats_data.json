@@ -10,12 +10,12 @@
     },
     "Max": {
         "club": "ZYN Sports FC",
-        "matches": 1,
-        "goals": 5,
+        "matches": 2,
+        "goals": 10,
         "wins": 0,
-        "draws": 0,
+        "draws": 1,
         "losses": 1,
-        "gc": 10
+        "gc": 25
     },
     "Angie": {
         "club": "ZYN Sports FC",
