@@ -1,0 +1,1206 @@
+# Arcade Soccer Game - Final Absolute Corner Fix Edition
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcade Soccer Challenge - Browser Standalone Edition</title>
+    <!-- Tailwind CSS for UI layouts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+            background-color: #020617;
+        }
+        /* Custom horizontal news ticker scroll animation */
+
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: flex;
+            width: max-content;
+            animation: marquee 30s linear infinite;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-2 text-white overflow-hidden gap-2">
+
+    <!-- Main TV Broadcast Console Wrap Box -->
+    <div class="w-full max-w-2xl flex flex-col bg-slate-950 rounded-lg shadow-2xl border-2 border-slate-800 overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.7)] z-10">
+        
+        <!-- 1. Bounded Field Canvas Viewport Frame -->
+        <div class="w-full relative aspect-[16/10] bg-slate-900 overflow-hidden flex items-center justify-center">
+            
+
+            <!-- Dynamic Television Overlay Banner (Penetrating the upper pitch area) -->
+            <div class="absolute top-0 left-0 right-0 px-2.5 py-2 flex flex-row items-center justify-between gap-2 select-none z-10 bg-gradient-to-b from-slate-950/70 via-slate-950/30 to-transparent pointer-events-none">
+                <!-- Downsized Broadcast Score Bug Overlay with built-in transition capabilities -->
+                <div id="tvScoreBug" class="flex items-center h-7 font-bold bg-slate-950/90 backdrop-blur-xs text-[10px] tracking-wide rounded border border-slate-700/40 shadow-lg overflow-hidden pointer-events-auto transition-opacity duration-200">
+                    <!-- Home Team (Player) Label Block -->
+                    <div class="px-2 text-slate-200 uppercase flex items-center gap-1 font-semibold text-[10px]">
+                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_4px_rgba(59,130,246,0.6)]"></span>
+                        PLR
+                    </div>
+                    <!-- Score Counter Panel Grid -->
+                    <div id="playerTvScore" class="bg-blue-600 px-2.5 h-full flex items-center font-black text-xs text-white min-w-[22px] justify-center shadow-inner transition-all duration-200">
+                        0
+                    </div>
+                    <!-- Visitor Team (AI Bot) Score Panel Grid -->
+                    <div id="aiTvScore" class="bg-red-600 px-2.5 h-full flex items-center font-black text-xs text-white min-w-[22px] justify-center shadow-inner border-r border-slate-800 transition-all duration-200">
+                        0
+                    </div>
+                    <div class="px-2 text-slate-200 uppercase flex items-center gap-1 font-semibold text-[10px]">
+                        BOT
+
+                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_4px_rgba(239,68,68,0.6)]"></span>
+                    </div>
+                    <!-- Broadcast Game Time Engine Match Clock Box -->
+                    <div class="bg-slate-900/90 px-2 h-full flex items-center font-mono font-bold text-yellow-400 border-l border-slate-800 tracking-tight text-xs min-w-[50px] justify-center" id="tvMatchClock">
+                        01:30
+                    </div>
+                    <!-- Match Half Period Badge Tag -->
+                    <div class="bg-slate-800 text-[9px] uppercase font-black tracking-wider text-slate-400 px-1.5 h-full flex items-center" id="tvMatchPeriod">
+                        1ST
+                    </div>
+                </div>
+
+                <!-- Right-Hand Side Broadcast & Telemetry Control Panel Layer -->
+                <div class="flex items-center gap-1.5 pointer-events-auto select-none">
+                    <!-- Compact Interactive Pause Button -->
+                    <button id="pauseBtn" class="flex items-center justify-center w-7 h-7 bg-slate-950/90 backdrop-blur-xs rounded border border-slate-700/40 shadow-lg text-white hover:bg-slate-900 active:scale-95 transition-all text-xs font-bold font-mono" title="Pause/Resume Match">
+                        ⏸
+                    </button>
+                    <!-- TV Station HD Network Bug Watermark Overlay -->
+
+                    <div class="flex items-center bg-slate-950/90 backdrop-blur-xs px-2 py-1 rounded border border-white/5 shadow-lg whitespace-nowrap">
+                        <div class="text-[10px] font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-slate-200 to-slate-400">
+                            ARCADE<span class="text-amber-400">SPORTS</span><span class="text-[7px] font-normal not-italic tracking-normal text-slate-400 ml-0.5">HD</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Graphical Canvas Pitch Frame -->
+            <canvas id="soccerCanvas" class="w-full h-full block bg-emerald-900 cursor-crosshair"></canvas>
+
+            <!-- Start / Main Menu Screen Overlay -->
+            <div id="mainMenuOverlay" class="absolute inset-0 bg-slate-950/95 backdrop-blur-md flex flex-col items-center justify-center p-4 z-20 transition-all duration-300">
+                <div class="text-center max-w-sm">
+                    <div class="inline-block bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase mb-2">
+                        📡 MATCHDAY PRESENTATION
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-black tracking-tight mb-2 bg-gradient-to-r from-slate-100 via-slate-300 to-slate-400 bg-clip-text text-transparent">
+                        SOCCER CUP 2026
+
+                    </h1>
+                    <p class="text-slate-400 text-[11px] mb-4 leading-relaxed">
+                        Slide your cursor or touch path to guide the team. The physics sub-routines have been upgraded with an post-boundary escape vector to eliminate corner jamming bugs permanently!
+                    </p>
+                    
+                    <!-- Controls Quick Guide -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-lg p-3 mb-4 text-left text-[11px] space-y-1">
+                        <div class="flex justify-between items-center"><span class="text-slate-400">Corner Physics:</span> <span class="text-emerald-400 font-bold uppercase">Post-Boundary Auto Rescue</span></div>
+                        <div class="flex justify-between items-center"><span class="text-slate-400">Match Pause Node:</span> <span class="text-yellow-400 font-bold uppercase">⏸ Dashboard Button</span></div>
+                        <div class="flex justify-between items-center"><span class="text-slate-400">Crowd Goal Roar:</span> <span class="text-amber-400 font-bold uppercase">Dynamic 2.8kHz EQ Surge</span></div>
+                    </div>
+
+                    <button id="startGameBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-2.5 px-4 rounded-lg shadow-md shadow-amber-500/10 transform transition active:scale-95 text-xs uppercase tracking-wider">
+                        Tune into Broadcast
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3-2-1 Countdown Overlay Delay -->
+
+            <div id="countdownOverlay" class="absolute inset-0 bg-slate-950/70 backdrop-blur-xs flex flex-col items-center justify-center pointer-events-none hidden z-20">
+                <div id="countdownText" class="text-5xl md:text-6xl font-black text-white font-mono tracking-tighter bg-slate-950 px-6 py-2 rounded-lg border border-slate-700 shadow-2xl">3</div>
+            </div>
+
+            <!-- Match Pause Screen Overlay Banner Modality -->
+            <div id="pauseOverlay" class="absolute inset-0 bg-slate-950/60 backdrop-blur-xs flex flex-col items-center justify-center hidden z-20 cursor-pointer select-none">
+                <div class="bg-slate-950/90 border border-slate-800 rounded-lg p-4 shadow-2xl flex flex-col items-center gap-1 text-center max-w-[220px] animate-pulse">
+                    <div class="text-yellow-400 font-black tracking-widest text-xs uppercase">MATCH PAUSED</div>
+                    <p class="text-[10px] text-slate-400 leading-normal">Tap anywhere on the pitch or click the <b>▶</b> icon to resume play</p>
+                </div>
+            </div>
+
+            <!-- Dynamic Instant Goal Replay / Skipping Overlay Banner Container -->
+            <div id="replayOverlay" class="absolute inset-0 bg-slate-950/10 hidden z-20 cursor-pointer select-none">
+                <!-- Cinematic Slow Motion Vignette Framing Elements -->
+                <div class="absolute inset-0 border-y-[12px] border-slate-950 pointer-events-none transition duration-300"></div>
+
+                <!-- Top TV Watermark Production Banner -->
+                <div class="absolute top-12 left-2 right-2 flex items-center justify-between bg-slate-900 text-white px-3 py-1.5 rounded shadow-lg border border-slate-800 transform transition" id="replayTopBar">
+
+                    <div class="flex items-center gap-1.5 font-black uppercase text-[10px] tracking-wider">
+                        <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
+                        🎬 SLOW MOTION REPLAY
+                    </div>
+                    <div id="replayScorerText" class="font-black text-[10px] text-yellow-300 uppercase tracking-widest font-mono"></div>
+                </div>
+
+                <!-- Corner Telemetry Overlay Readout -->
+                <div class="absolute bottom-2 left-2 font-mono text-[9px] text-white/60 uppercase tracking-wider space-y-0.5 pointer-events-none">
+                    <p>SRC FEED: CAMERA 01</p>
+                    <p>SPEED: 35% PLAYBACK RATE</p>
+                </div>
+
+                <!-- Skip Action Button shifted to the Bottom Right Corner -->
+                <div class="absolute bottom-2 right-2 bg-amber-500 border border-amber-600 hover:bg-amber-600 px-3 py-1.5 rounded text-slate-950 shadow-xl transform transition duration-150 active:scale-95 flex items-center gap-1 font-bold">
+                    <p class="text-[9px] font-black tracking-wider uppercase">
+                        SKIP REPLAY ⏩
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Match End / Game Over Overlay -->
+            <div id="gameOverOverlay" class="absolute inset-0 bg-slate-950/95 backdrop-blur-md flex flex-col items-center justify-center p-4 z-20 hidden">
+                <div class="text-center max-w-xs">
+                    <div class="text-2xl mb-2">🏆</div>
+                    <h2 id="winnerText" class="text-xl font-black mb-1 text-white uppercase tracking-wide">Transmission Concluded</h2>
+                    <p id="finalScoreText" class="text-slate-400 text-xs font-mono mb-4">Final Score: 0 - 0</p>
+                    
+                    <button id="rematchBtn" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded-lg border border-slate-600 transform transition active:scale-95 text-[10px] uppercase tracking-widest">
+                        Request Rematch Transmission
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Bottom Scrolling News Ticker Tape Feed -->
+        <div class="w-full h-6 bg-slate-950 border-t border-slate-800/80 flex items-center overflow-hidden text-[10px] font-semibold tracking-wide select-none shrink-0">
+            <!-- Ticker Category Heading Tag Header -->
+
+            <div class="bg-amber-500 text-slate-950 font-black uppercase px-2 h-full flex items-center text-[9px] tracking-widest border-r border-slate-900 shrink-0 z-20 shadow-[2px_0_6px_rgba(0,0,0,0.5)]">
+                BREAKING NEWS
+            </div>
+            <!-- Continuous Marquee Loop Wrapper Frame -->
+            <div class="w-full relative flex items-center overflow-hidden">
+                <div class="animate-marquee whitespace-nowrap flex gap-12 text-slate-300 uppercase font-mono">
+                    <span>⚡ CORNER JAM RESOLUTION COMPILED: REDESIGNED PHYSICS INTERCEPT BALL VECTORS AFTER WALL CHECKS TO EJECT SLICE CLIPPINGS INSTANTLY...</span>
+                    <span>🖥️ STANDALONE FILE FORMAT VALIDATED: BROWSER COMPLIANCE CONFIRMED WITH INTEGRATED STYLES, TAILWIND NETWORKS, AND AUDIO FX SYNTHTICS...</span>
+                    <span>⏸️ TELEMETRY CONTROL MATRIX MOUNTED: INTEGRATED PAUSE INTERACTION FREEZES GAMEPLAY COORDINATES...</span>
+                    <!-- Duplicate copy instance block to assure fluid looping -->
+                    <span>⚡ CORNER JAM RESOLUTION COMPILED: REDESIGNED PHYSICS INTERCEPT BALL VECTORS AFTER WALL CHECKS TO EJECT SLICE CLIPPINGS INSTANTLY...</span>
+                    <span>🖥️ STANDALONE FILE FORMAT VALIDATED: BROWSER COMPLIANCE CONFIRMED WITH INTEGRATED STYLES, TAILWIND NETWORKS, AND AUDIO FX SYNTHTICS...</span>
+                    <span>⏸️ TELEMETRY CONTROL MATRIX MOUNTED: INTEGRATED PAUSE INTERACTION FREEZES GAMEPLAY COORDINATES...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client-side Game Script Logic -->
+
+    <script>
+        const canvas = document.getElementById('soccerCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Target virtual dimensions of game engine coordinate field
+        const FIELD_WIDTH = 1000;
+        const FIELD_HEIGHT = 625;
+
+        // Set fixed canvas buffer resolution
+        canvas.width = FIELD_WIDTH;
+        canvas.height = FIELD_HEIGHT;
+
+        // Game Configuration Settings
+        const GAME_DURATION = 90; // Match length in seconds (1 min 30 sec)
+        const GOAL_SIZE = 160;    // Vertical size of goals
+        const GOAL_TOP = (FIELD_HEIGHT - GOAL_SIZE) / 2;
+        const GOAL_BOTTOM = GOAL_TOP + GOAL_SIZE;
+
+        // Game State Variables
+
+        let playerStateScore = 0; 
+        let aiStateScore = 0;
+        let matchTimer = GAME_DURATION;
+        let gameTimerInterval = null;
+        let currentState = 'MENU'; // MENU, COUNTDOWN, PLAYING, GOAL_ANIMATION, REPLAY, GAMEOVER
+        let isGamePaused = false;   // Playback interruption tracker boolean
+        
+        let countdownVal = 3;
+        let countdownInterval = null;
+
+        // Rewind Memory Buffer Arrays
+        let frameRecordingBuffer = [];
+        let activePlaybackSequence = [];
+        let playbackFrameIndex = 0;
+        const MAX_RECORDING_FRAMES = 150; // Roughly ~2.5 seconds of historical frames at standard 60fps pacing
+
+        // Pointer tracking coordinates for touch slide / mouse drag
+        const pointerTarget = { x: 0, y: 0, active: false };
+
+
+        // --- WEB AUDIO API ARCHITECTURE MODULE WITH LIVE CROWD & REFEREE WHISTLE ---
+        let audioCtx = null;
+        let crowdGainNode = null;
+        let crowdSourceNode = null;
+        let crowdFilterNode = null; // Global filter reference to dynamically modulate equalization parameters
+
+        function initAudioEngine() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            // Generate continuous stadium crowd sound drone if not already running
+            if (!crowdSourceNode) {
+                setupProceduralCrowdEngine();
+            }
+        }
+
+
+        function setupProceduralCrowdEngine() {
+            if (!audioCtx) return;
+
+            // Create a 2-second custom white noise audio sample buffer
+            const bufferSize = audioCtx.sampleRate * 2;
+            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const outputData = noiseBuffer.getChannelData(0);
+            
+            // Populate buffer channel with random audio white noise values
+            for (let i = 0; i < bufferSize; i++) {
+                outputData[i] = Math.random() * 2 - 1;
+            }
+
+            // Set up buffer looping nodes
+            crowdSourceNode = audioCtx.createBufferSource();
+            if (!crowdSourceNode) return;
+            crowdSourceNode.buffer = noiseBuffer;
+            crowdSourceNode.loop = true;
+
+
+            // Configure lowpass filter node globally to adjust frequencies dynamically
+            crowdFilterNode = audioCtx.createBiquadFilter();
+            crowdFilterNode.type = 'lowpass';
+            crowdFilterNode.frequency.setValueAtTime(950, audioCtx.currentTime);
+
+            // Master gain controller tracking crowd states
+            crowdGainNode = audioCtx.createGain();
+            crowdGainNode.gain.setValueAtTime(0.22, audioCtx.currentTime);
+
+            // Connect signal route chain
+            crowdSourceNode.connect(crowdFilterNode);
+            crowdFilterNode.connect(crowdGainNode);
+            crowdGainNode.connect(audioCtx.destination);
+
+            crowdSourceNode.start(0);
+        }
+
+        function changeCrowdVolume(targetVolume, rampDuration) {
+            if (!crowdGainNode || !audioCtx) return;
+
+            crowdGainNode.gain.linearRampToValueAtTime(targetVolume, audioCtx.currentTime + rampDuration);
+        }
+
+        // Dedicated Explosive Goal Crowd Roar Modulator
+        function triggerCrowdGoalRoarFx() {
+            if (!audioCtx || !crowdGainNode || !crowdFilterNode) return;
+            const now = audioCtx.currentTime;
+
+            // Clear any previously scheduled audio transitions immediately
+            crowdGainNode.gain.cancelScheduledValues(now);
+            crowdFilterNode.frequency.cancelScheduledValues(now);
+
+            // 1. Instantly surge the crowd volume envelope up to maximum capacity
+            crowdGainNode.gain.setValueAtTime(crowdGainNode.gain.value, now);
+            crowdGainNode.gain.linearRampToValueAtTime(0.98, now + 0.05);
+
+            // 2. Open up the equalizer cutoff filter instantly from 950Hz up to 2800Hz
+            crowdFilterNode.frequency.setValueAtTime(crowdFilterNode.frequency.value, now);
+            crowdFilterNode.frequency.linearRampToValueAtTime(2800, now + 0.08);
+
+
+            // 3. Sustain the thunderous roar across the full celebration and start of the replay
+            crowdGainNode.gain.setValueAtTime(0.98, now + 1.8);
+            crowdFilterNode.frequency.setValueAtTime(2800, now + 1.8);
+
+            // 4. Slowly and gracefully decay the cheer back down over a 3.5 second window
+            crowdGainNode.gain.exponentialRampToValueAtTime(0.48, now + 4.5);
+            crowdFilterNode.frequency.exponentialRampToValueAtTime(950, now + 4.5);
+        }
+
+        // Programmatic Referee Whistle Audio Synthesis
+        function playRefereeWhistleAudioFx(duration = 0.45) {
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            
+            const osc1 = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
+            const whistleFilter = audioCtx.createBiquadFilter();
+            const whistleGain = audioCtx.createGain();
+            
+
+            osc1.type = 'triangle'; 
+            osc1.frequency.setValueAtTime(1220, now);
+            osc1.frequency.exponentialRampToValueAtTime(1180, now + duration);
+            
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(1284, now);
+            osc2.frequency.exponentialRampToValueAtTime(1244, now + duration);
+            
+            // Inject a rapid frequency modulation LFO to replicate the pea ball spinning inside the air chamber
+            const lfo = audioCtx.createOscillator();
+            const lfoGain = audioCtx.createGain();
+            lfo.frequency.setValueAtTime(34, now); // 34Hz flutter rate
+            lfoGain.gain.setValueAtTime(55, now);  // Pitch deviation width
+            
+            // Bandpass filter isolates the organic hollow sweet spot of standard referee whistles
+            whistleFilter.type = 'bandpass';
+            whistleFilter.frequency.setValueAtTime(1240, now);
+            whistleFilter.Q.setValueAtTime(2.2, now);
+            
+
+            lfo.connect(lfoGain);
+            lfoGain.connect(osc1.frequency);
+            lfoGain.connect(osc2.frequency);
+            
+            osc1.connect(whistleFilter);
+            osc2.connect(whistleFilter);
+            whistleFilter.connect(whistleGain);
+            whistleGain.connect(audioCtx.destination);
+            
+            whistleGain.gain.setValueAtTime(0.48, now);
+            whistleGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+            
+            lfo.start(now);
+            osc1.start(now);
+            osc2.start(now);
+            
+            lfo.stop(now + duration);
+            osc1.stop(now + duration);
+            osc2.stop(now + duration);
+
+        }
+
+        function playKickAudioFx() {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(190, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(70, audioCtx.currentTime + 0.1);
+            
+            gain.gain.setValueAtTime(0.75, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
+
+
+        function playWallDeflectAudioFx() {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(130, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.08);
+            
+            gain.gain.setValueAtTime(0.55, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.08);
+        }
+
+        function playCountdownBeepAudioFx(isFinal) {
+
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(isFinal ? 880 : 440, audioCtx.currentTime);
+            
+            gain.gain.setValueAtTime(0.45, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.18);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.18);
+        }
+
+        function playGoalScoreAudioFx() {
+            if (!audioCtx) return;
+            const duration = 0.7;
+
+            const oscMain = audioCtx.createOscillator();
+            const oscSub = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscMain.connect(gainNode);
+            oscSub.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscMain.type = 'sawtooth';
+            oscMain.frequency.setValueAtTime(280, audioCtx.currentTime);
+            oscMain.frequency.linearRampToValueAtTime(580, audioCtx.currentTime + duration);
+            
+            oscSub.type = 'sine';
+            oscSub.frequency.setValueAtTime(140, audioCtx.currentTime);
+            oscSub.frequency.linearRampToValueAtTime(440, audioCtx.currentTime + duration);
+            
+            gainNode.gain.setValueAtTime(0.65, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            
+
+            oscMain.start();
+            oscSub.start();
+            oscMain.stop(audioCtx.currentTime + duration);
+            oscSub.stop(audioCtx.currentTime + duration);
+        }
+
+        // Entity Definitions
+        class DynamicBall {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = FIELD_WIDTH / 2;
+                this.y = FIELD_HEIGHT / 2;
+                this.vx = 0;
+                this.vy = 0;
+                this.radius = 14;
+                this.friction = 0.975;
+                this.mass = 1.2;
+
+                this.wasInCorner = false;
+            }
+            update() {
+                // Apply velocities
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Damping friction
+                this.vx *= this.friction;
+                this.vy *= this.friction;
+
+                // Slow down maximum ball velocity to make game easier to follow
+                const currentBallSpeed = Math.hypot(this.vx, this.vy);
+                const MAX_BALL_SPEED = 8.5;
+                if (currentBallSpeed > MAX_BALL_SPEED) {
+                    this.vx = (this.vx / currentBallSpeed) * MAX_BALL_SPEED;
+                    this.vy = (this.vy / currentBallSpeed) * MAX_BALL_SPEED;
+                }
+
+
+                // Stop creeping tiny values
+                if (Math.abs(this.vx) < 0.05) this.vx = 0;
+                if (Math.abs(this.vy) < 0.05) this.vy = 0;
+
+                // Boundary Elastic Collisions (Top & Bottom Walls)
+                if (this.y - this.radius < 0) {
+                    this.y = this.radius;
+                    this.vy = -this.vy * 0.6;
+                    playWallDeflectAudioFx();
+                } else if (this.y + this.radius > FIELD_HEIGHT) {
+                    this.y = FIELD_HEIGHT - this.radius;
+                    this.vy = -this.vy * 0.6;
+                    playWallDeflectAudioFx();
+                }
+
+                // Left & Right boundary wall collisions (accounting for Goal net openings)
+                if (this.y >= GOAL_TOP && this.y <= GOAL_BOTTOM) {
+                    if (currentState === 'PLAYING') {
+                        if (this.x < -this.radius) {
+
+                            handleGoalScored('AI');
+                        } else if (this.x > FIELD_WIDTH + this.radius) {
+                            handleGoalScored('PLAYER');
+                        }
+                    }
+                } else {
+                    // Regular pitch border rebounds
+                    if (this.x - this.radius < 0) {
+                        this.x = this.radius;
+                        this.vx = -this.vx * 0.6;
+                        playWallDeflectAudioFx();
+                    } else if (this.x + this.radius > FIELD_WIDTH) {
+                        this.x = FIELD_WIDTH - this.radius;
+                        this.vx = -this.vx * 0.6;
+                        playWallDeflectAudioFx();
+                    }
+                }
+
+                // --- ADVANCED ANTI-PIN RESOLUTION CORNER RESCUE SYSTEM ---
+
+                // Pushes both position bounds and velocity vectors outward to escape sandwiches cleanly.
+                // Placed after boundary line containment clips to prevent compounding loop locks.
+                const rescueLimit = 48;
+                let cornerTriggered = false;
+
+                if (this.x < rescueLimit && this.y < rescueLimit) { // Top-Left Corner
+                    this.x = rescueLimit; this.y = rescueLimit;
+                    this.vx = Math.max(Math.abs(this.vx), 3.8); this.vy = Math.max(Math.abs(this.vy), 3.8);
+                    cornerTriggered = true;
+                } else if (this.x > FIELD_WIDTH - rescueLimit && this.y < rescueLimit) { // Top-Right Corner
+                    this.x = FIELD_WIDTH - rescueLimit; this.y = rescueLimit;
+                    this.vx = -Math.max(Math.abs(this.vx), 3.8); this.vy = Math.max(Math.abs(this.vy), 3.8);
+                    cornerTriggered = true;
+                } else if (this.x < rescueLimit && this.y > FIELD_HEIGHT - rescueLimit) { // Bottom-Left Corner
+                    this.x = rescueLimit; this.y = FIELD_HEIGHT - rescueLimit;
+                    this.vx = Math.max(Math.abs(this.vx), 3.8); this.vy = -Math.max(Math.abs(this.vy), 3.8);
+                    cornerTriggered = true;
+                } else if (this.x > FIELD_WIDTH - rescueLimit && this.y > FIELD_HEIGHT - rescueLimit) { // Bottom-Right Corner
+                    this.x = FIELD_WIDTH - rescueLimit; this.y = FIELD_HEIGHT - rescueLimit;
+
+                    this.vx = -Math.max(Math.abs(this.vx), 3.8); this.vy = -Math.max(Math.abs(this.vy), 3.8);
+                    cornerTriggered = true;
+                }
+
+                if (cornerTriggered) {
+                    if (!this.wasInCorner) {
+                        playWallDeflectAudioFx();
+                        this.wasInCorner = true;
+                    }
+                } else {
+                    this.wasInCorner = false;
+                }
+            }
+            draw() {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(this.x + 4, this.y + 6, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(0,0,0,0.25)';
+                ctx.fill();
+
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.fill();
+                ctx.lineWidth = 2.5;
+                ctx.strokeStyle = '#1e293b';
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius * 0.4, 0, Math.PI * 2);
+                ctx.fillStyle = '#1e293b';
+                ctx.fill();
+
+                for (let angle = 0; angle < Math.PI * 2; angle += (Math.PI * 2) / 5) {
+                    ctx.beginPath();
+                    ctx.moveTo(this.x + Math.cos(angle) * (this.radius * 0.4), this.y + Math.sin(angle) * (this.radius * 0.4));
+                    ctx.lineTo(this.x + Math.cos(angle) * this.radius, this.y + Math.sin(angle) * this.radius);
+                    ctx.strokeStyle = '#1e293b';
+                    ctx.lineWidth = 2;
+
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+        }
+
+        class PitchPlayer {
+            constructor(type) {
+                this.type = type;
+                this.radius = 24;
+                this.mass = 4;
+                this.baseSpeed = (type === 'PLAYER') ? 6.5 : 3.4;
+                this.reset();
+            }
+            reset() {
+                if (this.type === 'PLAYER') {
+                    this.x = FIELD_WIDTH * 0.25;
+                    this.y = FIELD_HEIGHT / 2;
+                    this.color = '#3b82f6';
+
+                    this.accentColor = '#60a5fa';
+                } else {
+                    this.x = FIELD_WIDTH * 0.75;
+                    this.y = FIELD_HEIGHT / 2;
+                    this.color = '#ef4444';
+                    this.accentColor = '#f87171';
+                }
+                this.vx = 0;
+                this.vy = 0;
+                this.reactionDelayCounter = 0;
+                this.targetX = FIELD_WIDTH * 0.75;
+                this.targetY = FIELD_HEIGHT / 2;
+            }
+            update() {
+                if (this.type === 'PLAYER') {
+                    this.handlePlayerInputControls();
+                } else {
+                    this.processAIBotLogic();
+                }
+
+
+                this.x += this.vx;
+                this.y += this.vy;
+
+                this.vx *= 0.82;
+                this.vy *= 0.82;
+
+                // Field boundary restriction logic box
+                if (this.x - this.radius < 0) { this.x = this.radius; this.vx = 0; }
+                if (this.x + this.radius > FIELD_WIDTH) { this.x = FIELD_WIDTH - this.radius; this.vx = 0; }
+                if (this.y - this.radius < 0) { this.y = this.radius; this.vy = 0; }
+                if (this.y + this.radius > FIELD_HEIGHT) { this.y = FIELD_HEIGHT - this.radius; this.vy = 0; }
+            }
+            handlePlayerInputControls() {
+                if (pointerTarget.active) {
+                    const deltaX = pointerTarget.x - this.x;
+                    const deltaY = pointerTarget.y - this.y;
+                    const distance = Math.hypot(deltaX, deltaY);
+
+                    if (distance > 5) {
+
+                        this.vx = (deltaX / distance) * this.baseSpeed;
+                        this.vy = (deltaY / distance) * this.baseSpeed;
+                    } else {
+                        this.vx = deltaX * 0.2;
+                        this.vy = deltaY * 0.2;
+                    }
+                }
+            }
+            processAIBotLogic() {
+                this.reactionDelayCounter++;
+                if (this.reactionDelayCounter % 20 === 0) {
+                    this.targetX = soccerBall.x;
+                    this.targetY = soccerBall.y;
+
+                    if (soccerBall.x < FIELD_WIDTH / 2) {
+                        this.targetX = Math.max(FIELD_WIDTH * 0.82, soccerBall.x + 180);
+                        this.targetY = (soccerBall.y + FIELD_HEIGHT / 2) / 2;
+                    }
+                }
+
+
+                const deltaTargetX = this.targetX - this.x;
+                const deltaTargetY = this.targetY - this.y;
+                const currentDistance = Math.hypot(deltaTargetX, deltaTargetY);
+
+                if (currentDistance > 12) {
+                    this.vx += (deltaTargetX / currentDistance) * this.baseSpeed * 0.18;
+                    this.vy += (deltaTargetY / currentDistance) * this.baseSpeed * 0.18;
+                }
+            }
+            draw() {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(this.x + 5, this.y + 8, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+
+                ctx.fill();
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = '#ffffff';
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius * 0.6, 0, Math.PI * 2);
+                ctx.fillStyle = this.accentColor;
+                ctx.fill();
+
+                const movementAngle = Math.atan2(this.vy, this.vx);
+                if (Math.hypot(this.vx, this.vy) > 0.5) {
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.x + Math.cos(movementAngle) * this.radius, this.y + Math.sin(movementAngle) * this.radius);
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                }
+
+                ctx.restore();
+            }
+        }
+
+        // Initialize entities
+        const soccerBall = new DynamicBall();
+        const playerOne = new PitchPlayer('PLAYER');
+        const computerAI = new PitchPlayer('AI');
+
+        function handlePointerInputMoveUpdate(clientX, clientY) {
+            if (isGamePaused) return; // Prevent input movement vectors while game is paused
+            initAudioEngine(); // Wake/bind audio context safely on active gestures
+            const rect = canvas.getBoundingClientRect();
+            pointerTarget.x = ((clientX - rect.left) / rect.width) * FIELD_WIDTH;
+            pointerTarget.y = ((clientY - rect.top) / rect.height) * FIELD_HEIGHT;
+            pointerTarget.active = true;
+        }
+
+        // Hook direct canvas pointer tracking movement listeners
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (currentState === 'PLAYING') handlePointerInputMoveUpdate(e.clientX, e.clientY);
+        });
+        canvas.addEventListener('mouseenter', (e) => {
+            if (currentState === 'PLAYING' && e.touches && e.touches.length > 0) handlePointerInputMoveUpdate(e.clientX, e.clientY);
+        });
+        canvas.addEventListener('mouseleave', () => {
+            pointerTarget.active = false;
+        });
+
+        // Touch event screen tracking observers
+        canvas.addEventListener('touchstart', (e) => {
+            if (currentState === 'PLAYING' && e.touches.length > 0) {
+                handlePointerInputMoveUpdate(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        }, { passive: true });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if (currentState === 'PLAYING' && e.touches.length > 0) {
+
+                handlePointerInputMoveUpdate(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        }, { passive: true });
+
+        canvas.addEventListener('touchend', () => {
+            pointerTarget.active = false;
+        });
+
+        // Click Listener for Replay skipping
+        document.getElementById('replayOverlay').addEventListener('click', () => {
+            initAudioEngine();
+            if (currentState === 'REPLAY') {
+                bypassInstantReplayPlayback();
+            }
+        });
+
+        // --- PAUSE TRIGGERS INTERACTION IMPLEMENTATION ---
+        const pauseBtn = document.getElementById('pauseBtn');
+        const pauseOverlay = document.getElementById('pauseOverlay');
+
+
+        function toggleMatchPauseState() {
+            if (currentState !== 'PLAYING') return; // Restrict pause functions to active gameplay intervals exclusively
+            initAudioEngine();
+            isGamePaused = !isGamePaused;
+
+            if (isGamePaused) {
+                pauseBtn.innerText = "▶";
+                pauseOverlay.classList.remove('hidden');
+                changeCrowdVolume(0.12, 0.15); // Attenuate arena roar levels while paused
+            } else {
+                pauseBtn.innerText = "⏸";
+                pauseOverlay.classList.add('hidden');
+                changeCrowdVolume(0.45, 0.15); // Restore game crowd ambience balances seamlessly
+            }
+        }
+
+        pauseBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Avoid event collision propagation bounds
+            toggleMatchPauseState();
+
+        });
+
+        pauseOverlay.addEventListener('click', () => {
+            if (isGamePaused) toggleMatchPauseState();
+        });
+
+        // Physics Rigid Circle Cross-Collision Processing
+        function resolveCircleCollisions(c1, c2) {
+            const deltaX = c2.x - c1.x;
+            const deltaY = c2.y - c1.y;
+            const distance = Math.hypot(deltaX, deltaY);
+            const minimumAllowedDistance = c1.radius + c2.radius;
+
+            if (distance < minimumAllowedDistance) {
+                const overlapCorrectionDist = minimumAllowedDistance - distance;
+                const normalDirectionX = deltaX / distance;
+                const normalDirectionY = deltaY / distance;
+
+                const totalInvertedMass = (1 / c1.mass) + (1 / c2.mass);
+
+                
+                if (c1.type !== undefined || c1 instanceof DynamicBall) {
+                    c1.x -= normalDirectionX * overlapCorrectionDist * ((1 / c1.mass) / totalInvertedMass);
+                    c1.y -= normalDirectionY * overlapCorrectionDist * ((1 / c1.mass) / totalInvertedMass);
+                }
+                c2.x += normalDirectionX * overlapCorrectionDist * ((1 / c2.mass) / totalInvertedMass);
+                c2.y += normalDirectionY * overlapCorrectionDist * ((1 / c2.mass) / totalInvertedMass);
+
+                const relativeVelocityX = c1.vx - c2.vx;
+                const relativeVelocityY = c1.vy - c2.vy;
+                const velocityAlongNormal = relativeVelocityX * normalDirectionX + relativeVelocityY * normalDirectionY;
+
+                if (velocityAlongNormal > 0) {
+                    const elasticRestitutionFactor = c1 instanceof DynamicBall || c2 instanceof DynamicBall ? 1.1 : 0.6;
+                    const impulseScalar = (1 + elasticRestitutionFactor) * velocityAlongNormal / totalInvertedMass;
+
+                    c1.vx -= (impulseScalar / c1.mass) * normalDirectionX;
+                    c1.vy -= (impulseScalar / c1.mass) * normalDirectionY;
+                    c2.vx += (impulseScalar / c2.mass) * normalDirectionX;
+
+                    c2.vy += (impulseScalar / c2.mass) * normalDirectionY;
+
+                    // Play dynamic audio pops for ball interactions
+                    if (c1 instanceof DynamicBall || c2 instanceof DynamicBall) {
+                        playKickAudioFx();
+                    }
+                }
+            }
+        }
+
+        // Render Field Marking Layouts
+        function drawSoccerFieldPitch() {
+            ctx.fillStyle = '#0f766e';
+            ctx.fillRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT);
+
+            ctx.fillStyle = '#115e59';
+            const stripeWidth = FIELD_WIDTH / 14;
+            for (let i = 0; i < 14; i += 2) {
+                ctx.fillRect(i * stripeWidth, 0, stripeWidth, FIELD_HEIGHT);
+
+            }
+
+            ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT);
+
+            ctx.beginPath();
+            ctx.moveTo(FIELD_WIDTH / 2, 0);
+            ctx.lineTo(FIELD_WIDTH / 2, FIELD_HEIGHT);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(FIELD_WIDTH / 2, FIELD_HEIGHT / 2, 85, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(FIELD_WIDTH / 2, FIELD_HEIGHT / 2, 6, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255,255,255,0.5)';
+            ctx.fill();
+
+
+            ctx.strokeRect(0, FIELD_HEIGHT / 2 - 150, 140, 300);
+            ctx.strokeRect(0, FIELD_HEIGHT / 2 - 75, 50, 150);
+
+            ctx.strokeRect(FIELD_WIDTH - 140, FIELD_HEIGHT / 2 - 150, 140, 300);
+            ctx.strokeRect(FIELD_WIDTH - 50, FIELD_HEIGHT / 2 - 75, 50, 150);
+
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.5)';
+            ctx.fillRect(-25, GOAL_TOP, 25, GOAL_SIZE);
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 5;
+            ctx.strokeRect(-25, GOAL_TOP, 25, GOAL_SIZE);
+
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.5)';
+            ctx.fillRect(FIELD_WIDTH, GOAL_TOP, 25, GOAL_SIZE);
+            ctx.strokeRect(FIELD_WIDTH, GOAL_TOP, 25, GOAL_SIZE);
+
+            const rArc = 20;
+            ctx.beginPath(); ctx.arc(0, 0, rArc, 0, Math.PI / 2); ctx.stroke();
+            ctx.beginPath(); ctx.arc(0, FIELD_HEIGHT, rArc, Math.PI * 1.5, 0); ctx.stroke();
+
+            ctx.beginPath(); ctx.arc(FIELD_WIDTH, 0, rArc, Math.PI / 2, Math.PI); ctx.stroke();
+            ctx.beginPath(); ctx.arc(FIELD_WIDTH, FIELD_HEIGHT, rArc, Math.PI, Math.PI * 1.5); ctx.stroke();
+        }
+
+        // Trigger countdown kickoff timer
+        function triggerMatchDelayCountdown(callback) {
+            currentState = 'COUNTDOWN';
+            pointerTarget.active = false;
+            countdownVal = 3;
+            
+            // Revert crowd background volume smoothly down to strategic countdown focus levels
+            if (audioCtx && crowdGainNode && crowdFilterNode) {
+                const now = audioCtx.currentTime;
+                crowdGainNode.gain.cancelScheduledValues(now);
+                crowdFilterNode.frequency.cancelScheduledValues(now);
+                crowdGainNode.gain.linearRampToValueAtTime(0.25, now + 0.2);
+                crowdFilterNode.frequency.linearRampToValueAtTime(950, now + 0.2);
+            }
+
+
+            const overlay = document.getElementById('countdownOverlay');
+            const txt = document.getElementById('countdownText');
+            
+            overlay.classList.remove('hidden');
+            txt.innerText = countdownVal;
+            playCountdownBeepAudioFx(false);
+
+            if (countdownInterval) clearInterval(countdownInterval);
+            
+            countdownInterval = setInterval(() => {
+                countdownVal--;
+                if (countdownVal > 0) {
+                    txt.innerText = countdownVal;
+                    playCountdownBeepAudioFx(false);
+                } else if (countdownVal === 0) {
+                    txt.innerText = "KICKOFF";
+                    // Signal active matchday kickoff start with the official re-tuned referee whistle blast
+                    playRefereeWhistleAudioFx(0.45);
+                    if (crowdGainNode) crowdGainNode.gain.linearRampToValueAtTime(0.45, audioCtx.currentTime + 0.1);
+
+                } else {
+                    clearInterval(countdownInterval);
+                    overlay.classList.add('hidden');
+                    callback();
+                }
+            }, 500);
+        }
+
+        function handleGoalScored(teamScorer) {
+            currentState = 'GOAL_ANIMATION';
+            pointerTarget.active = false;
+            
+            // Fire the explosive stadium crowd roar EQ frequency surge and arcade fanfare overlay notes
+            triggerCrowdGoalRoarFx(); 
+            playGoalScoreAudioFx(); 
+            
+            const pScoreBox = document.getElementById('playerTvScore');
+            const aScoreBox = document.getElementById('aiTvScore');
+            const replayHeader = document.getElementById('replayTopBar');
+
+
+            if (teamScorer === 'PLAYER') {
+                playerStateScore += 1;
+                pScoreBox.innerText = "GOAL";
+                pScoreBox.className = "bg-gradient-to-r from-blue-500 via-blue-600 to-cyan-500 px-3 h-full flex items-center font-black text-[9px] text-white min-w-[45px] justify-center shadow-md transition-all duration-200 uppercase tracking-tighter scale-105 shadow-blue-500/50 animate-pulse";
+                
+                replayHeader.className = "absolute top-12 left-2 right-2 flex items-center justify-between bg-blue-700 text-white px-3 py-1.5 rounded shadow-lg border border-blue-600 transform transition";
+                document.getElementById('replayScorerText').innerText = "GOAL SCORE: PLAYER ⚽";
+            } else {
+                aiStateScore += 1;
+                aScoreBox.innerText = "GOAL";
+                aScoreBox.className = "bg-gradient-to-r from-red-500 via-red-600 to-pink-500 px-3 h-full flex items-center font-black text-[9px] text-white min-w-[45px] justify-center shadow-md transition-all duration-200 uppercase tracking-tighter scale-105 border-r border-slate-800 shadow-red-500/50 animate-pulse";
+                
+                replayHeader.className = "absolute top-12 left-2 right-2 flex items-center justify-between bg-red-700 text-white px-3 py-1.5 rounded shadow-lg border border-red-600 transform transition";
+                document.getElementById('replayScorerText').innerText = "GOAL SCORE: AI BOT ⚽";
+            }
+
+            // Fixed delay of exactly 0.5 seconds before instant replay begins
+            setTimeout(() => {
+                if (currentState === 'GOAL_ANIMATION') {
+
+                    currentState = 'REPLAY';
+                    activePlaybackSequence = [...frameRecordingBuffer];
+                    playbackFrameIndex = 0;
+                    document.getElementById('replayOverlay').classList.remove('hidden');
+                }
+            }, 500);
+        }
+
+        function bypassInstantReplayPlayback() {
+            document.getElementById('replayOverlay').classList.add('hidden');
+            frameRecordingBuffer = [];
+            resetMatchPitchPositions();
+            
+            document.getElementById('playerTvScore').innerText = playerStateScore;
+            document.getElementById('playerTvScore').className = "bg-blue-600 px-2.5 h-full flex items-center font-black text-xs text-white min-w-[22px] justify-center shadow-inner transition-all duration-200";
+            
+            document.getElementById('aiTvScore').innerText = aiStateScore;
+            document.getElementById('aiTvScore').className = "bg-red-600 px-2.5 h-full flex items-center font-black text-xs text-white min-w-[22px] justify-center shadow-inner border-r border-slate-800 transition-all duration-200";
+
+
+            if (matchTimer > 0) {
+                // Return crowd EQ parameters cleanly to normalized gameplay settings
+                if (audioCtx && crowdGainNode && crowdFilterNode) {
+                    const now = audioCtx.currentTime;
+                    crowdGainNode.gain.cancelScheduledValues(now);
+                    crowdFilterNode.frequency.cancelScheduledValues(now);
+                    crowdGainNode.gain.linearRampToValueAtTime(0.45, now + 0.25);
+                    crowdFilterNode.frequency.linearRampToValueAtTime(950, now + 0.25);
+                }
+                triggerMatchDelayCountdown(() => {
+                    currentState = 'PLAYING';
+                    isGamePaused = false;
+                    pauseBtn.innerText = "⏸";
+                    pauseOverlay.classList.add('hidden');
+                });
+            }
+        }
+
+        function resetMatchPitchPositions() {
+
+            soccerBall.reset();
+            playerOne.reset();
+            computerAI.reset();
+        }
+
+        function startMatchCountdownClock() {
+            if (gameTimerInterval) clearInterval(gameTimerInterval);
+            
+            gameTimerInterval = setInterval(() => {
+                // Ensure countdown ticks freeze gracefully alongside simulation boundaries while paused
+                if (currentState === 'PLAYING' && !isGamePaused) {
+                    matchTimer--;
+                    
+                    const minutes = Math.floor(matchTimer / 60).toString().padStart(2, '0');
+                    const seconds = (matchTimer % 60).toString().padStart(2, '0');
+                    document.getElementById('tvMatchClock').innerText = `${minutes}:${seconds}`;
+
+                    if (matchTimer <= 0) {
+                        handleMatchTerminationEvent();
+
+                    }
+                }
+            }, 1000);
+        }
+
+        function handleMatchTerminationEvent() {
+            currentState = 'GAMEOVER';
+            pointerTarget.active = false;
+            clearInterval(gameTimerInterval);
+            
+            // Blast an air-blown 1.2-second full time whistle sequence to signal match over
+            playRefereeWhistleAudioFx(1.2);
+            
+            if (audioCtx && crowdGainNode && crowdFilterNode) {
+                const now = audioCtx.currentTime;
+                crowdGainNode.gain.cancelScheduledValues(now);
+                crowdFilterNode.frequency.cancelScheduledValues(now);
+                crowdGainNode.gain.linearRampToValueAtTime(0.22, now + 0.8);
+                crowdFilterNode.frequency.linearRampToValueAtTime(950, now + 0.8);
+
+            }
+
+            const winTextElement = document.getElementById('winnerText');
+            const scoreTextElement = document.getElementById('finalScoreText');
+
+            if (playerStateScore > aiStateScore) {
+                winTextElement.innerText = "🏆 FINAL: PLAYER VICTORY";
+                winTextElement.className = "text-xl font-black mb-1 text-amber-400 uppercase tracking-wide";
+            } else if (aiStateScore > playerStateScore) {
+                winTextElement.innerText = "💥 FINAL: BOT DEFEAT";
+                winTextElement.className = "text-xl font-black mb-1 text-red-500 uppercase tracking-wide";
+            } else {
+                winTextElement.innerText = "🤝 FINAL: DRAW GAME";
+                winTextElement.className = "text-xl font-black mb-1 text-slate-300 uppercase tracking-wide";
+            }
+
+            scoreTextElement.innerText = `Full-Time Statistics: ${playerStateScore} - ${aiStateScore}`;
+            document.getElementById('gameOverOverlay').classList.remove('hidden');
+            document.getElementById('tvMatchPeriod').innerText = "FT";
+
+            document.getElementById('tvMatchPeriod').className = "bg-red-600 text-[9px] uppercase font-black tracking-wider text-white px-1.5 h-full flex items-center";
+        }
+
+        function kickOffNewMatchGame() {
+            initAudioEngine(); // Instantiate/Awaken Web Audio context sandbox layers cleanly
+            playerStateScore = 0; 
+            aiStateScore = 0;
+            matchTimer = GAME_DURATION;
+            pointerTarget.active = false;
+            frameRecordingBuffer = [];
+            isGamePaused = false;
+
+            pauseBtn.innerText = "⏸";
+            pauseOverlay.classList.add('hidden');
+            
+            document.getElementById('playerTvScore').innerText = "0";
+            document.getElementById('playerTvScore').className = "bg-blue-600 px-2.5 h-full flex items-center font-black text-xs text-white min-w-[22px] justify-center shadow-inner transition-all duration-200";
+            
+            document.getElementById('aiTvScore').innerText = "0";
+
+            document.getElementById('aiTvScore').className = "bg-red-600 px-2.5 h-full flex items-center font-black text-xs text-white min-w-[22px] justify-center shadow-inner border-r border-slate-800 transition-all duration-200";
+            
+            document.getElementById('tvMatchClock').innerText = "01:30";
+            document.getElementById('tvMatchPeriod').innerText = "1ST";
+            document.getElementById('tvMatchPeriod').className = "bg-slate-800 text-[9px] uppercase font-black tracking-wider text-slate-400 px-1.5 h-full flex items-center";
+            
+            document.getElementById('mainMenuOverlay').classList.add('hidden');
+            document.getElementById('gameOverOverlay').classList.add('hidden');
+            
+            resetMatchPitchPositions();
+            
+            triggerMatchDelayCountdown(() => {
+                currentState = 'PLAYING';
+                startMatchCountdownClock();
+            });
+        }
+
+        function gameProcessingLoop() {
+            if (currentState === 'PLAYING') {
+
+                // If paused, halt physics integration, AI paths, and memory tracking queues completely
+                if (!isGamePaused) {
+                    playerOne.update();
+                    computerAI.update();
+                    soccerBall.update();
+
+                    resolveCircleCollisions(playerOne, computerAI);
+                    resolveCircleCollisions(soccerBall, playerOne);
+                    resolveCircleCollisions(soccerBall, computerAI);
+
+                    frameRecordingBuffer.push({
+                        ballX: soccerBall.x,
+                        ballY: soccerBall.y,
+                        p1X: playerOne.x,
+                        p1Y: playerOne.y,
+                        aiX: computerAI.x,
+                        aiY: computerAI.y
+                    });
+
+
+                    if (frameRecordingBuffer.length > MAX_RECORDING_FRAMES) {
+                        frameRecordingBuffer.shift();
+                    }
+                }
+            } else if (currentState === 'REPLAY') {
+                const dynamicCurrentIndex = Math.floor(playbackFrameIndex);
+
+                if (activePlaybackSequence.length > 0 && dynamicCurrentIndex < activePlaybackSequence.length) {
+                    const snap = activePlaybackSequence[dynamicCurrentIndex];
+                    soccerBall.x = snap.ballX;
+                    soccerBall.y = snap.ballY;
+                    playerOne.x = snap.p1X;
+                    playerOne.y = snap.p1Y;
+                    computerAI.x = snap.aiX;
+                    computerAI.y = snap.aiY;
+                    
+                    playbackFrameIndex += 0.35;
+                } else {
+                    bypassInstantReplayPlayback();
+
+                }
+            }
+
+            // HUD Adaptive Proximity Transparency Engine Check
+            const scoreBugElement = document.getElementById('tvScoreBug');
+            if (scoreBugElement) {
+                if (soccerBall.y < 150 && soccerBall.x < 360) {
+                    scoreBugElement.classList.add('opacity-25');
+                } else {
+                    scoreBugElement.classList.remove('opacity-25');
+                }
+            }
+
+            ctx.clearRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT);
+            drawSoccerFieldPitch();
+
+            playerOne.draw();
+            computerAI.draw();
+            soccerBall.draw();
+
+
+            requestAnimationFrame(gameProcessingLoop);
+        }
+
+        // Hook game UI overlay click setups
+        document.getElementById('startGameBtn').addEventListener('click', kickOffNewMatchGame);
+        document.getElementById('rematchBtn').addEventListener('click', kickOffNewMatchGame);
+
+        window.onload = function() {
+            requestAnimationFrame(gameProcessingLoop);
+        };
+    </script>
+</body>
+</html>
+
+
